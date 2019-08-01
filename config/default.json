@@ -1,0 +1,3 @@
+{
+    "mongoURI": "mongodb+srv://Vicktree:Vicktree@ascend-5edon.mongodb.net/test?retryWrites=true&w=majority" 
+}
