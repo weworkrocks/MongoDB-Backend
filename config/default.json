@@ -1,3 +1,5 @@
 {
-    "mongoURI": "mongodb+srv://Vicktree:Vicktree@ascend-5edon.mongodb.net/test?retryWrites=true&w=majority" 
+    "mongoURI": "mongodb+srv://Vicktree:Vicktree@ascend-5edon.mongodb.net/test?retryWrites=true&w=majority",
+    "jwtSecret": "mysecrettoken",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNWQ0MzNiNWIzZDdiMzczOTM0MGE1OTQ2In0sImlhdCI6MTU2NDY4NzE5NSwiZXhwIjoxNTY1MDQ3MTk1fQ.8cR5fSTRcoWUYRIx3QqmZSL-16F51B2io7O-tsARlnk"
 }
