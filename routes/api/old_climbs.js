@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator/');
 const auth = require('../../middleware/auth');
-const Climb2 = require('../../models/Climb2');
+const Climb = require('../../models/OLD_Climb');
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
 
@@ -12,6 +12,10 @@ const User = require('../../models/User');
 router.post('/', 
     [
         auth
+        , [
+            check('location', 'location Is Required').not().isEmpty(),
+            check('climbScore', 'climbScore Is Required').not().isEmpty()
+        ]
     ], async (req, res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
@@ -22,10 +26,14 @@ router.post('/',
 
     const user = await User.findById(req.user.id).select('-password');
 
-    const newClimb = new Climb2({
+    const newClimb = new Climb({
+        location: req.body.location,
+        climbScore: req.body.climbScore,
         name: user.name,
+        avatar: user.avatar,
         user: req.user.id
     });
+
     const climb = await newClimb.save();
 
     res.json(climb);
@@ -37,59 +45,18 @@ router.post('/',
 })
 
 
-
 //@route     Get api/climbs  Gets ALl CLimbs
 //@desc      GET all
 //@access    Private
 
 router.get('/', auth,  async (req, res) => {
     try{
-        const climbs = await Climb2.find().sort({ date: -1});
+        const climbs = await Climb.find().sort({ date: -1});
         res.json(climbs)
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error')
     }
-});
-
-
-//@route GET    api/post/comment/:id
-//@desc Test    route
-//@access       Public
-router.post("/climbdata/:id", [auth, [
-    check('location', 'location is required').not().isEmpty(),
-    check('climbScore', 'climbScore is required').not().isEmpty()
-] ], 
-    async (req, res ) => {
-
-        const errors = validationResult(req);
-        if(!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-
-        try {
-            const user = await User.findById(req.user.id).select('-password');
-            const climb = await Climb2.findById(req.params.id);
-            // console.log(climb);
-            const newClimbData = {
-                climbScore: req.body.climbScore,
-                name: user.name,
-                location: req.body.location,
-                user: req.user.id
-            }
-
-            climb.climbData.unshift(newClimbData);
-
-            await climb.save();
-            res.json(climb.climbData);
-            // res.json(climb.climb);
-
-        } catch(err) {
-            console.error(err.message);
-            res.status(500).send('Server Error')
-        }
-
-
 });
 
 
@@ -103,7 +70,7 @@ router.get('/:user', auth,  async (req, res) => {
         // console.log('test', req.user)
         // const climb = await Climb.findById(req.user)
         // const climb = await Climb.findById(req.params.user)
-        const climb = await Climb2.find({'user':req.user.id})
+        const climb = await Climb.find({'user':req.user.id})
         
 
         if(!climb){
@@ -125,7 +92,7 @@ router.get('/:user', auth,  async (req, res) => {
 router.get('/score/:usersum', auth,  async (req, res) => {
     try {
     
-        const climb = await Climb2.find({'user':req.user.id})
+        const climb = await Climb.find({'user':req.user.id})
         sum = 0;
         counter = 0;
         climb.map( socre => {
